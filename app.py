@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import logging
+import threading
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -222,45 +223,49 @@ def workspace_tasks(workspace_id):
     total = query.count()
     pagination = Pagination(page=page, total=total, per_page=per_page, css_framework='bootstrap4')
 
-    # Create Task
+   # Create Task Logic (ฉบับกันตาย 100%)
     if form.validate_on_submit():
-        task = Task(
-            title=form.title.data,
-            description=form.description.data,
-            deadline=form.deadline.data,
-            created_by=current_user.id,
-            workspace_id=ws.id,
-            assigned_to=form.assigned_to.data if form.assigned_to.data != 0 else None
-        )
-        task.priority = calculate_priority(task.description, task.deadline) 
-        
-        db.session.add(task)
-        db.session.commit()
-        
-        # Notify Logic (แก้ให้เตือน Creator และ Assignee)
-        msg = f"New task in '{ws.name}': {task.title}"
-        
         try:
-            if task.assigned_to:
-                # กรณี 1: มีคนรับงาน -> เตือนคนรับ + เตือนเราเอง
-                assigned_user = User.query.get(task.assigned_to)
-                if assigned_user: 
-                    send_notification(assigned_user.email, msg)
-                
-                if current_user.email: 
-                    send_notification(current_user.email, f"Task created: {task.title} (Assigned to {assigned_user.username})")
-
-            else:
-                # กรณี 2: ไม่เลือกคน -> เตือนทุกคนในกลุ่ม
-                for member in ws.members:
-                    send_notification(member.email, msg)
+            # --- ด่านที่ 1: บันทึกเข้า Database ---
+            task = Task(
+                title=form.title.data,
+                description=form.description.data,
+                deadline=form.deadline.data,
+                created_by=current_user.id,
+                workspace_id=ws.id,
+                assigned_to=form.assigned_to.data if form.assigned_to.data != 0 else None
+            )
+            # ถ้ามีฟังก์ชัน calculate_priority ให้ใช้บรรทัดนี้ ถ้าไม่มีให้ลบทิ้ง
+            task.priority = calculate_priority(task.description, task.deadline) 
+            
+            db.session.add(task)
+            db.session.commit() # ถ้าพังตรงนี้ จะเด้งไป except ตัวล่างทันที
+            
+            # --- ด่านที่ 2: ส่งเมล (แยก try ออกมาต่างหาก) ---
+            try:
+                msg = f"New task in '{ws.name}': {task.title}"
+                if task.assigned_to:
+                    # ใช้ db.session.get เพื่อลด warning
+                    assigned_user = db.session.get(User, task.assigned_to) 
+                    if assigned_user: send_notification(assigned_user.email, msg)
                     
-        except Exception as e:
-            # ถ้าส่งเมลพัง ให้ปริ้น Error เก็บไว้ แล้วปล่อยผ่านไปเลย (เว็บจะไม่ล่ม)
-            print(f"❌ Email sending failed: {e}")
+                    if current_user.email: 
+                        send_notification(current_user.email, f"Task created: {task.title} (Assigned to {assigned_user.username})")
+                else:
+                    for member in ws.members:
+                        send_notification(member.email, msg)
+            except Exception as e:
+                print(f"❌ Email Failed (But Task Saved): {e}")
 
-        flash('Task created!')
-        return redirect(url_for('workspace_tasks', workspace_id=ws.id))
+            flash('Task created successfully!')
+            return redirect(url_for('workspace_tasks', workspace_id=ws.id))
+
+        except Exception as e:
+            # ถ้าด่าน 1 พัง (Database Error) ให้มาตรงนี้
+            db.session.rollback() # ยกเลิกการบันทึก
+            print(f"❌ Database Error: {e}")
+            flash(f'Error creating task: {str(e)}') 
+            # ไม่ต้อง redirect แต่ปล่อยให้ไหลลงไป render_template ด้านล่างเพื่อโชว์ error
 
     invite_link = url_for('join_workspace', token=ws.invite_code, _external=True)
     return render_template('tasks.html', form=form, search_form=search_form, tasks=tasks_list, pagination=pagination, workspace=ws, invite_link=invite_link)
