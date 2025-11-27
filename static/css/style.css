@@ -1,0 +1,276 @@
+:root {
+    --bg-color: #0f172a;
+    --primary: #3b82f6; /* สีฟ้าสมัยใหม่ */
+    --secondary: #6366f1; /* สีม่วง Indigo */
+    --accent: #06b6d4; /* สีฟ้า Cyan */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Background Effect */
+.background-glow {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15), transparent 50%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 1.5rem;
+}
+
+/* Header */
+header {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+    font-size: 0.95rem;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--text-main);
+}
+
+.user-info {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+.badge.admin { color: var(--accent); }
+.badge.member { color: var(--success); }
+
+.nav-btn.logout {
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+.nav-btn.logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Main Layout */
+main.center-container {
+    margin-top: 100px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px; /* กว้างขึ้นเพื่อให้ดูไม่อึดอัด */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Forms & Cards */
+form, .card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto; /* จัดกึ่งกลาง */
+}
+
+/* Inputs */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Buttons */
+input[type="submit"], button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+input[type="submit"]:hover, button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px var(--primary);
+}
+
+/* Alerts */
+.flash-messages { margin-bottom: 20px; }
+.alert {
+    padding: 12px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: var(--success);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+/* Task List Styling (สำหรับหน้า Tasks) */
+ul { list-style: none; }
+li {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+li:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+}
+
+/* Priority Tags */
+.priority-high { color: var(--danger); font-weight: 600; }
+.priority-medium { color: var(--warning); font-weight: 600; }
+.priority-low { color: var(--success); font-weight: 600; }
+
+/* Links */
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Icon Container (Login/Register) */
+.icon-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.icon-container i {
+    font-size: 3rem;
+    background: -webkit-linear-gradient(var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* static/css/style.css */
+
+.auth-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    
+    max-width: 450px;
+    width: 100%;
+    margin: 0 auto;
+    /* text-align: center;  <-- ลบบรรทัดนี้ทิ้ง หรือเปลี่ยนเป็น left ถ้าต้องการ */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; <-- ลบบรรทัดนี้ทิ้ง เพื่อให้ของข้างในมันยืดเต็มและชิดซ้ายตามธรรมชาติ */
+}
+
+.auth-card h2, .auth-card .icon-container, .auth-card .links {
+    text-align: center; /* บังคับให้หัวข้อกับไอคอนยังอยู่ตรงกลาง */
+    align-self: center; /* จัดตัวเองให้อยู่กลางกล่อง */
+}
+
+/* เพิ่มตัวนี้เพื่อให้ Input label ชิดซ้ายชัดเจน */
+.auth-card form {
+    text-align: left; 
+    width: 100%;
+}
+
+/* คุมกำเนิดความกว้างของ Dashboard */
+.dashboard-limit {
+    max-width: 800px !important; /* บีบให้เล็กลง (เดิมมัน 1000px) */
+    margin: 0 auto;
+}

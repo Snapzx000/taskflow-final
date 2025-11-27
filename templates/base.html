@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Team Task Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <header>
+        <a href="{{ url_for('workspaces') if current_user.is_authenticated else '#' }}" class="logo" style="text-decoration: none;">
+            <i class="fas fa-layer-group"></i> TaskFlow
+        </a>
+
+        {% if current_user.is_authenticated %}
+            <nav>
+                <a href="{{ url_for('workspaces') }}" class="nav-item">
+                    <i class="fas fa-th-large"></i> My Workspaces
+                </a>
+
+                {% if workspace %}
+                    <span style="color: rgba(255,255,255,0.2); margin: 0 5px;">|</span>
+                    
+                    <a href="{{ url_for('workspace_dashboard', workspace_id=workspace.id) }}" class="nav-item">
+                        <i class="fas fa-chart-pie"></i> Dashboard
+                    </a>
+                    
+                    <a href="{{ url_for('workspace_members_manage', workspace_id=workspace.id) }}" class="nav-item">
+                        <i class="fas fa-users"></i> Members
+                    </a>
+                    
+                    <a href="{{ url_for('workspace_trash', workspace_id=workspace.id) }}" class="nav-item" style="color: var(--danger);">
+                        <i class="fas fa-trash-alt"></i> Trash
+                    </a>
+                {% endif %}
+                
+                <span class="user-info">
+                    <i class="fas fa-user-circle"></i> {{ current_user.username }} 
+                </span>
+                
+                <a href="{{ url_for('logout') }}" class="nav-btn logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        {% endif %}
+    </header>
+
+    <main class="center-container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

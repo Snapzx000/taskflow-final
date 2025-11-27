@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}My Workspaces{% endblock %}
+{% block content %}
+<div class="workspace-container" style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>My Workspaces</h2>
+    </div>
+
+    <div style="margin-bottom: 4rem;">
+        <h3 style="margin-bottom: 1rem;">Create New Workspace</h3>
+        <form method="POST" style="display: flex; gap: 10px; align-items: flex-start;">
+            {{ form.hidden_tag() }}
+            
+            <div style="flex-grow: 1; margin-bottom: 0;">
+                {{ form.name(placeholder="Enter workspace name...", style="margin-bottom: 0; height: 50px; width: 100%; border-radius: 12px;") }}
+            </div>
+            
+            <div style="width: auto;">
+                {{ form.submit(value="Create +", style="height: 50px; margin-top: 2px; padding: 0 30px; border-radius: 12px;") }}
+            </div>
+        </form>
+    </div>
+
+    <div class="workspace-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+        {% for ws in workspaces %}
+            <a href="{{ url_for('workspace_tasks', workspace_id=ws.id) }}" class="workspace-card" style="text-decoration: none;">
+                <div style="background: var(--glass-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--glass-border); transition: 0.3s; text-align: center;">
+                    <i class="fas fa-layer-group" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3 style="margin: 0; color: white;">{{ ws.name }}</h3>
+                    <p style="color: var(--text-muted); margin-top: 5px;">{{ ws.members.count() }} Members</p>
+                </div>
+            </a>
+        {% else %}
+            <p class="text-muted">You are not in any workspace yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .workspace-card:hover div {
+        border-color: var(--primary);
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.05);
+    }
+</style>
+{% endblock %}

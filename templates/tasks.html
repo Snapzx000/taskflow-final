@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ workspace.name }} - Tasks{% endblock %}
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2><i class="fas fa-layer-group"></i> {{ workspace.name }}</h2>
+        
+        <div style="text-align: right;">
+            <small style="color: var(--text-muted);">Invite Link:</small><br>
+            <input type="text" value="{{ invite_link }}" readonly style="font-size: 0.8rem; padding: 5px; width: 200px; display: inline-block; margin: 0;">
+            
+            <button onclick="navigator.clipboard.writeText('{{ invite_link }}'); alert('Copied!');" style="width: auto; padding: 6px 10px; font-size: 0.8rem; cursor: pointer;">Copy</button>
+            
+            <a href="{{ url_for('workspace_members_manage', workspace_id=workspace.id) }}" style="background: var(--secondary); color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 0.8rem; margin-left: 5px; display: inline-block;">
+                <i class="fas fa-users"></i> Members
+            </a>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3>New Task</h3>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div><label>Title</label>{{ form.title }}</div>
+                <div><label>Deadline</label>{{ form.deadline }}</div>
+            </div>
+            <label>Description</label>{{ form.description(rows=2) }}
+            <label>Assign to</label>{{ form.assigned_to }}
+            {{ form.submit(value="Add Task") }}
+        </form>
+    </div>
+
+    <h3>Tasks List</h3>
+    <ul>
+        {% for task in tasks %}
+            <li style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong style="font-size: 1.1rem;">{{ task.title }}</strong>
+                    <span class="badge priority-{{ task.priority }}">{{ task.priority|capitalize }}</span>
+                    <span class="badge" style="background: #333; font-size: 0.8rem;">{{ task.status }}</span>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 5px 0;">
+                        {{ task.description }} <br>
+                        <i class="far fa-clock"></i> Due: {{ task.deadline.strftime('%d/%m/%Y %H:%M') }} | 
+                        <i class="fas fa-user"></i> Assigned: {{ task.assigned_to|default('None') }}
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    {% if task.status != 'completed' %}
+                        <a href="{{ url_for('change_status', task_id=task.id, new_status='completed') }}" style="color: var(--success);"><i class="fas fa-check"></i></a>
+                    {% endif %}
+                    <a href="{{ url_for('edit_task', task_id=task.id) }}" style="color: var(--warning);"><i class="fas fa-edit"></i></a>
+                    <a href="{{ url_for('delete_task', task_id=task.id) }}" style="color: var(--danger);" onclick="return confirm('Delete task?');"><i class="fas fa-trash"></i></a>
+                </div>
+            </li>
+        {% else %}
+            <p style="text-align: center; color: var(--text-muted);">No tasks in this workspace.</p>
+        {% endfor %}
+    </ul>
+    
+    {% endblock %}

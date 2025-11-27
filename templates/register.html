@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+    <div class="auth-card">
+        <div class="icon-container"><i class="fas fa-user-plus"></i></div>
+        <h2>Register</h2>
+        
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <label>{{ form.username.label }} {{ form.username(placeholder="Username") }}</label>
+            <label>{{ form.email.label }} {{ form.email(placeholder="Email") }}</label>
+            <label>{{ form.password.label }} {{ form.password(placeholder="Password") }}</label>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                {{ form.submit(value="Register") }}
+            </div>
+        </form>
+
+        <div class="links" style="text-align: center; margin-top: 15px;">
+            <a href="{{ url_for('login') }}">Already have an account? Login <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Trash Bin - {{ workspace.name }}{% endblock %}
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2><i class="fas fa-trash-alt"></i> Trash Bin ({{ workspace.name }})</h2>
+        <a href="{{ url_for('workspace_tasks', workspace_id=workspace.id) }}" class="nav-item">
+            <i class="fas fa-arrow-left"></i> Back to Tasks
+        </a>
+    </div>
+
+    <ul style="list-style: none; padding: 0;">
+        {% for task in tasks %}
+            <li style="background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.3); padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong style="font-size: 1.1rem; color: #ffcccc;">{{ task.title }}</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 5px 0;">Deleted task</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('restore_task', task_id=task.id) }}" 
+                       style="background-color: #28a745; color: #ffffff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; border: none; display: inline-block;">
+                        <i class="fas fa-trash-restore"></i> Restore
+                    </a>
+                </div>
+            </li>
+        {% else %}
+            <p style="text-align: center; color: var(--text-muted);">Trash bin is empty.</p>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

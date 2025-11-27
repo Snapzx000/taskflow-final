@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}403 - Forbidden{% endblock %}
+{% block content %}
+<div style="text-align: center; margin-top: 50px;">
+    <h1 style="font-size: 4em; color: var(--danger);">403</h1>
+    <h2>Access Denied</h2>
+    <p style="color: var(--text-muted);">You don't have permission to view this page.</p>
+    <a href="{{ url_for('workspaces') }}" class="nav-btn" style="margin-top: 20px; display: inline-block;">
+        Go Back Home
+    </a>
+</div>
+{% endblock %}

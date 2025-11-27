@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}500 - Internal Server Error{% endblock %}
+{% block content %}
+<div style="text-align: center; margin-top: 50px;">
+    <h1 style="font-size: 4em; color: var(--danger);">500</h1>
+    <h2>Oops! Something went wrong.</h2>
+    <p style="color: var(--text-muted);">
+        The server encountered an internal error. This is often caused by <b>Email sending failure</b>.
+    </p>
+    <a href="{{ url_for('workspaces') }}" class="nav-btn" style="margin-top: 20px; display: inline-block;">
+        Go Back Home
+    </a>
+</div>
+{% endblock %}

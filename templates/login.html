@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <div class="auth-card">
+        <div class="icon-container"><i class="fas fa-user-lock"></i></div>
+        <h2>Member Login</h2>
+        
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <label>{{ form.username.label }} {{ form.username(placeholder="Username") }}</label>
+            <label>{{ form.password.label }} {{ form.password(placeholder="Password") }}</label>
+            {{ form.submit(value="Login") }}
+        </form>
+
+        <div class="links">
+            <a href="#">Forgot Username / Password?</a><br>
+            <a href="{{ url_for('register') }}">Create your Account <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+{% endblock %}

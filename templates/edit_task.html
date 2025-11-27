@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Edit Task{% endblock %}
+{% block content %}
+    <h2>Edit Task</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <label>Title: {{ form.title }}</label>
+        <label>Description: {{ form.description }}</label>
+        <label>Deadline: {{ form.deadline }}</label>
+        <label>Assign to: {{ form.assigned_to }}</label>
+        {{ form.submit(value='Update Task') }}
+    </form>
+{% endblock %}
