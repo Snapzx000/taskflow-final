@@ -222,6 +222,8 @@ def workspace_tasks(workspace_id):
     tasks_list = query.order_by(Task.deadline.asc()).offset(offset).limit(per_page).all()
     total = query.count()
     pagination = Pagination(page=page, total=total, per_page=per_page, css_framework='bootstrap4')
+    
+    invite_link = url_for('join_workspace', token=ws.invite_code, _external=True)    
 
    # Create Task Logic (ฉบับกันตาย 100%)
     if form.validate_on_submit():
@@ -267,7 +269,6 @@ def workspace_tasks(workspace_id):
             flash(f'Error creating task: {str(e)}') 
             # ไม่ต้อง redirect แต่ปล่อยให้ไหลลงไป render_template ด้านล่างเพื่อโชว์ error
 
-    invite_link = url_for('join_workspace', token=ws.invite_code, _external=True)
     return render_template('tasks.html', form=form, search_form=search_form, tasks=tasks_list, pagination=pagination, workspace=ws, invite_link=invite_link)
 
 # --- Actions (Edit, Status, Delete, Restore, Trash, Dashboard, Members) ---
